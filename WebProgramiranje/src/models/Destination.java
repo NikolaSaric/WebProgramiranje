@@ -1,4 +1,4 @@
-package model;
+package models;
 
 public class Destination {
 	private String name;

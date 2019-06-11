@@ -1,28 +1,28 @@
-package model;
+package beans;
 
-public abstract class User {
+public class UserBean {
 	private String username;
-	private String password;
 	private String firstName;
+	private String password;
+	private String repeatPassword;
 	private String lastName;
 	private String phoneNumber;
 	private String email;
 	private String picture;
-	private boolean blocked;
 
-	public User(String username, String password, String firstName, String lastName, String phoneNumber,
-			String email, String picture, boolean blocked) {
+	public UserBean(String username, String firstName, String password, String repeatPassword, String lastName,
+			String phoneNumber, String email, String picture) {
 		this.username = username;
-		this.password = password;
 		this.firstName = firstName;
+		this.password = password;
+		this.repeatPassword = repeatPassword;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.picture = picture;
-		this.blocked = blocked;
 	}
 
-	public User() {
+	public UserBean() {
 	}
 
 	public String getUsername() {
@@ -33,6 +33,14 @@ public abstract class User {
 		this.username = username;
 	}
 
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -41,12 +49,12 @@ public abstract class User {
 		this.password = password;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getRepeatPassword() {
+		return repeatPassword;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setRepeatPassword(String repeatPassword) {
+		this.repeatPassword = repeatPassword;
 	}
 
 	public String getLastName() {
@@ -79,14 +87,6 @@ public abstract class User {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
-	}
-
-	public boolean isBlocked() {
-		return blocked;
-	}
-
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
 	}
 
 }
