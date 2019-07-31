@@ -1,8 +1,6 @@
 package services;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,20 +15,19 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import beans.LoginBean;
-import beans.UserBean;
-import models.Admin;
+import beans.UserRegisterBean;
 import models.RegularUser;
 import models.User;
 
 @Path("/server")
-public class Login {
-	final String usersPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\users.txt";
+public class LoginService {
 
 	@Context
 	HttpServletRequest request;
 	@Context
 	ServletContext ctx;
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -44,13 +41,19 @@ public class Login {
 			return "Enter password.";
 		}
 
-		ArrayList<User> users = this.loadUsers();
+		// Checks if users are loaded in servlet context.
+		if (ctx.getAttribute("users") == null) {
+			ArrayList<User> users = Util.loadUsers();
+			ctx.setAttribute("users", users);
+		}
 
 		String user = "";
-		for (User u : users) {
+
+		// Looks for user in ctx.users, if one is found adds it to session.
+		for (User u : (ArrayList<User>) ctx.getAttribute("users")) {
 			if (u.getUsername().equals(lb.getUsername()) && u.getPassword().equals(lb.getPassword())) {
 				user = u.getUsername();
-				ctx.setAttribute("loggedUser", u);
+				request.setAttribute("loggedUser", u);
 				break;
 			}
 		}
@@ -60,11 +63,12 @@ public class Login {
 		return "Logged in as: " + user;
 	}
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/register")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String register(UserBean ub) {
+	public String register(UserRegisterBean ub) {
 		if (ub.getUsername().equals("".trim()) || ub.getUsername() == null) {
 			return "Enter username.";
 		}
@@ -93,9 +97,14 @@ public class Login {
 			return "Repeat password does not matches password.";
 		}
 
-		ArrayList<User> users = this.loadUsers();
+		// Checks if users are loaded in servlet context.
+		if (ctx.getAttribute("users") == null) {
+			ArrayList<User> users = Util.loadUsers();
+			ctx.setAttribute("users", users);
+		}
 
-		for (User u : users) {
+		// Checks if username is taken.
+		for (User u : (ArrayList<User>) ctx.getAttribute("users")) {
 			if (u.getUsername().equals(ub.getUsername())) {
 				return "User with given name already exists.";
 			}
@@ -111,13 +120,14 @@ public class Login {
 		newUser.setPicture(ub.getPicture());
 		newUser.setBlocked(false);
 
+		// Appends the new user to file which contains all users.
 		String newUserLine = ub.getUsername() + "|" + ub.getPassword() + "|" + ub.getFirstName() + "|"
 				+ ub.getLastName() + "|" + ub.getPhoneNumber() + "|" + ub.getEmail() + "|" + ub.getPicture() + "|" + "0"
 				+ "|" + "regular";
 
 		BufferedWriter writer;
 		try {
-			writer = new BufferedWriter(new FileWriter(this.usersPath, true) // Set true for append mode
+			writer = new BufferedWriter(new FileWriter(Util.usersPath, true) // Set true for append mode
 			);
 			writer.newLine(); // Add new line
 			writer.write(newUserLine);
@@ -126,40 +136,12 @@ public class Login {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		// Adds new user to ctx.users.
+		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+		users.add(newUser);
+
 		return "Successfully registered as: " + ub.getUsername();
 	}
 
-	private ArrayList<User> loadUsers() {
-		ArrayList<User> users = new ArrayList<User>();
-
-		BufferedReader reader;
-		try {
-			reader = new BufferedReader(new FileReader(this.usersPath));
-			String line = reader.readLine();
-			while (line != null) {
-				String[] l = line.split("\\|");
-				boolean blocked;
-
-				if (l[7].equals("0")) {
-					blocked = false;
-				} else {
-					blocked = true;
-				}
-				if (l[8].equals("admin")) {
-					Admin admin = new Admin(l[0], l[1], l[2], l[3], l[4], l[5], l[6], blocked);
-					users.add(admin);
-				} else if (l[8].equals("regular")) {
-					RegularUser regularUser = new RegularUser(l[0], l[1], l[2], l[3], l[4], l[5], l[6], blocked);
-					users.add(regularUser);
-				}
-				// read next line
-				line = reader.readLine();
-			}
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return users;
-	}
 }

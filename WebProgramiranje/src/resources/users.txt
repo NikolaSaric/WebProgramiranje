@@ -3,3 +3,5 @@ ru1|123|Jovana|Jovanic|005345456|jovana@mail.com|asd|0|regular
 ru2|123|Milan|Milanic|02222226|milan@mail.com|asd|0|regular
 admin|admin|Adminko|Adminic|00000001|admin@mail.com|asd|0|admin
 ru3|123|Neko|Nekic|00231231|neko@mail.com|Default picture|0|regular
+ru4|123|Ru|Ruic|41415|rujko@mail.com|Default picture|0|regular
+ru5|123|adam|adamic|124125|adam@mail.com|Default picture|0|regular

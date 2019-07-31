@@ -9,6 +9,7 @@ Vue.component("login", {
 	},
 	template: ` 
 <div>
+	<navbar></navbar>
 	<h2> Login</h2>
 	<table>
 		<tr>
@@ -88,9 +89,8 @@ Vue.component("login", {
 			.post('rest/server/login',{username: this.username, password: this.password})
 			.then(response => {
 				toast(response.data);
-				if(response.data.startsWith("Logged")) {
-					console.log("bravo");
-				}
+				localStorage.setItem("loggedUser", {username: this.username, password: this.password});
+				this.$router.push("/");
 			});
 		},
 		register : function () {

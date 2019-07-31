@@ -1,24 +1,28 @@
 package beans;
 
-public class UserBean {
+public class UserRegisterBean {
 	private String username;
 	private String firstName;
+	private String password;
+	private String repeatPassword;
 	private String lastName;
 	private String phoneNumber;
 	private String email;
 	private String picture;
 
-	public UserBean(String username, String firstName, String lastName, String phoneNumber, String email,
-			String picture) {
+	public UserRegisterBean(String username, String firstName, String password, String repeatPassword, String lastName,
+			String phoneNumber, String email, String picture) {
 		this.username = username;
 		this.firstName = firstName;
+		this.password = password;
+		this.repeatPassword = repeatPassword;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.picture = picture;
 	}
 
-	public UserBean() {
+	public UserRegisterBean() {
 	}
 
 	public String getUsername() {
@@ -35,6 +39,22 @@ public class UserBean {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRepeatPassword() {
+		return repeatPassword;
+	}
+
+	public void setRepeatPassword(String repeatPassword) {
+		this.repeatPassword = repeatPassword;
 	}
 
 	public String getLastName() {
