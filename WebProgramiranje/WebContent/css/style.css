@@ -22,3 +22,11 @@
 .navbar li a:hover {
   background-color: #111;
 }
+
+.centered1 {
+	text-align: center;
+}
+
+.centered2 {
+	display: inline-block
+}

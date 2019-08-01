@@ -7,15 +7,19 @@ public class UserBean {
 	private String phoneNumber;
 	private String email;
 	private String picture;
+	private boolean blocked;
+	private String role;
 
 	public UserBean(String username, String firstName, String lastName, String phoneNumber, String email,
-			String picture) {
+			String picture, boolean blocked, String role) {
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.picture = picture;
+		this.blocked = blocked;
+		this.role = role;
 	}
 
 	public UserBean() {
@@ -67,6 +71,22 @@ public class UserBean {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

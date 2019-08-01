@@ -17,18 +17,18 @@ Vue.component("navbar", {
 			<ul>
 				<li><a href="./">WebTravel</a></li>
 				<li style="float:right"><a href="" v-on:click="logout()">Log Out</a></li>
-				<li style="float:right"><a href="contact.asp">Profile</a></li>
+				<li style="float:right"><a href="./#/profile">Profile</a></li>
 			</ul>
 		</div>	  
 </div>
 `
 	, 
 	mounted() {
-        this.loggedIn = localStorage.getItem("loggedUser") !== "";
+        this.loggedIn = localStorage.loggedUsername !== "";
     },
 	methods : {
 		logout: function() {
-			localStorage.setItem("loggedUser","");
+			localStorage.loggedUsername = "";
 			this.$router.push("/");
 		}
 	},

@@ -14,8 +14,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import beans.ChangePasswordBean;
+import beans.EditProfileBean;
 import beans.LoginBean;
+import beans.UserBean;
 import beans.UserRegisterBean;
+import models.Admin;
 import models.RegularUser;
 import models.User;
 
@@ -32,13 +36,13 @@ public class LoginService {
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String login(LoginBean lb) {
+	public UserBean login(LoginBean lb) {
 
 		if (lb.getUsername().equals("".trim()) || lb.getUsername() == null) {
-			return "Enter username.";
+			return null;
 		}
 		if (lb.getPassword().equals("".trim()) || lb.getPassword() == null) {
-			return "Enter password.";
+			return null;
 		}
 
 		// Checks if users are loaded in servlet context.
@@ -48,19 +52,34 @@ public class LoginService {
 		}
 
 		String user = "";
-
+		UserBean ub = new UserBean();
 		// Looks for user in ctx.users, if one is found adds it to session.
 		for (User u : (ArrayList<User>) ctx.getAttribute("users")) {
+			System.out.println(u.getClass());
 			if (u.getUsername().equals(lb.getUsername()) && u.getPassword().equals(lb.getPassword())) {
 				user = u.getUsername();
-				request.setAttribute("loggedUser", u);
+				request.getSession().setAttribute("loggedUser", u);
+				
+				ub.setUsername(u.getUsername());
+				ub.setFirstName(u.getFirstName());
+				ub.setLastName(u.getLastName());
+				ub.setEmail(u.getEmail());
+				ub.setPhoneNumber(u.getPhoneNumber());
+				ub.setPicture(u.getPicture());
+				ub.setBlocked(u.isBlocked());
+				if (u instanceof Admin) {
+					ub.setRole("Admin");
+				} else if (u instanceof RegularUser) {
+					ub.setRole("RegularUser");
+				}
 				break;
 			}
 		}
 		if (user.equals("")) {
-			return "No user found with matching username and password.";
+			return null;
 		}
-		return "Logged in as: " + user;
+
+		return ub;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,7 +113,7 @@ public class LoginService {
 			ub.setPicture("Default picture");
 		}
 		if (!ub.getPassword().equals(ub.getRepeatPassword())) {
-			return "Repeat password does not matches password.";
+			return "Repeated password does not match new password.";
 		}
 
 		// Checks if users are loaded in servlet context.
@@ -140,8 +159,75 @@ public class LoginService {
 		// Adds new user to ctx.users.
 		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
 		users.add(newUser);
+		// ctx.setAttribute("users", users);
 
 		return "Successfully registered as: " + ub.getUsername();
+	}
+
+	@POST
+	@Path("/editProfile")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String editProfile(EditProfileBean epb) throws IOException {
+		if (epb.getFirstName() == null || epb.getFirstName().equals("".trim())) {
+			return "Enter first name.";
+		}
+		if (epb.getLastName() == null || epb.getLastName().equals("".trim())) {
+			return "Enter last name.";
+		}
+		if (epb.getEmail() == null || epb.getEmail().equals("".trim())) {
+			return "Enter email.";
+		}
+		if (epb.getPhoneNumber() == null || epb.getPhoneNumber().equals("".trim())) {
+			return "Enter phone number.";
+		}
+
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		System.out.println(loggedUser);
+		System.out.println(loggedUser.getUsername());
+		loggedUser.setFirstName(epb.getFirstName());
+		loggedUser.setLastName(epb.getLastName());
+		loggedUser.setEmail(epb.getEmail());
+		loggedUser.setPhoneNumber(epb.getPhoneNumber());
+
+		@SuppressWarnings("unchecked")
+		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+
+		Util.saveUsers(users);
+
+		return "User profile successfully edited";
+	}
+
+	@POST
+	@Path("/changePassword")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String changePassword(ChangePasswordBean cpb) throws IOException {
+		if (cpb.getOldPassword() == null || cpb.getOldPassword().equals("".trim())) {
+			return "Enter old password.";
+		}
+		if (cpb.getNewPassword() == null || cpb.getOldPassword().equals("".trim())) {
+			return "Enter new password.";
+		}
+		if (cpb.getRepeatedPassword() == null || cpb.getRepeatedPassword().equals("".trim())) {
+			return "Repeat new password.";
+		}
+		if (!cpb.getNewPassword().equals(cpb.getRepeatedPassword())) {
+			return "Repeated password does not match new password.";
+		}
+
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!loggedUser.getPassword().equals(cpb.getOldPassword())) {
+			return "Wrong user, please log in again.";
+		}
+
+		loggedUser.setPassword(cpb.getNewPassword());
+
+		@SuppressWarnings("unchecked")
+		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+		Util.saveUsers(users);
+
+		return "Successfully changed password";
 	}
 
 }

@@ -7,7 +7,7 @@ public class Destination {
 	private String airportCode;
 	private String coordinates;
 	private String picture;
-	private boolean state;
+	private boolean active;
 
 	public Destination(String name, String country, String airport, String airportCode, String coordinates,
 			String picture, boolean state) {
@@ -17,7 +17,7 @@ public class Destination {
 		this.airportCode = airportCode;
 		this.coordinates = coordinates;
 		this.picture = picture;
-		this.state = state;
+		this.active = state;
 	}
 
 	public Destination() {
@@ -72,11 +72,11 @@ public class Destination {
 	}
 
 	public boolean isState() {
-		return state;
+		return active;
 	}
 
 	public void setState(boolean state) {
-		this.state = state;
+		this.active = state;
 	}
 
 }

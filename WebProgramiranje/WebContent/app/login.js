@@ -88,9 +88,20 @@ Vue.component("login", {
 			axios
 			.post('rest/server/login',{username: this.username, password: this.password})
 			.then(response => {
-				toast(response.data);
-				localStorage.setItem("loggedUser", {username: this.username, password: this.password});
-				this.$router.push("/");
+				if(response.data !== null) {
+					toast("Logged in as: " + response.data.username + response.data.role);
+					localStorage.loggedUsername = response.data.username;
+					localStorage.loggedFirstName = response.data.firstName;
+					localStorage.loggedLastName = response.data.lastName;
+					localStorage.loggedEmail = response.data.email;
+					localStorage.loggedPhoneNumber = response.data.phoneNumber;
+					localStorage.loggedBlocked = response.data.blocked;
+					this.$router.push("/");
+				} else {
+					toast("Username or password are incorrect.");
+					localStorage.setItem("loggedUser","");
+				}
+				
 			});
 		},
 		register : function () {

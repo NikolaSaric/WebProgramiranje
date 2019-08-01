@@ -1,4 +1,4 @@
-nikola|123|Nikola|Nikic|00123456|nikola@mail.com|asd|0|admin
+nikola|123|Nikola|Nikicic|00123456|nikola@mail.com|asd|0|admin
 ru1|123|Jovana|Jovanic|005345456|jovana@mail.com|asd|0|regular
 ru2|123|Milan|Milanic|02222226|milan@mail.com|asd|0|regular
 admin|admin|Adminko|Adminic|00000001|admin@mail.com|asd|0|admin
