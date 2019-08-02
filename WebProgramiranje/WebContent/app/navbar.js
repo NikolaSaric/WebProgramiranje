@@ -9,7 +9,7 @@ Vue.component("navbar", {
 		<div class="navbar" v-if="!loggedIn">
 			<ul>
 				<li><a href="./">WebTravel</a></li>
-				<li style="float:right"><a href="./register">Register</a></li>
+				<li style="float:right"><a href="./#/register">Register</a></li>
 				<li style="float:right"><a href="./#/login">Log In</a></li>
 			</ul>
 		</div>		
@@ -24,11 +24,11 @@ Vue.component("navbar", {
 `
 	, 
 	mounted() {
-        this.loggedIn = localStorage.loggedUsername !== "";
+        this.loggedIn = typeof localStorage.loggedUsername != "undefined";
     },
 	methods : {
 		logout: function() {
-			localStorage.loggedUsername = "";
+			localStorage.clear();
 			this.$router.push("/");
 		}
 	},

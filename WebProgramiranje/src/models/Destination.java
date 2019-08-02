@@ -71,12 +71,12 @@ public class Destination {
 		this.picture = picture;
 	}
 
-	public boolean isState() {
+	public boolean isActive() {
 		return active;
 	}
 
-	public void setState(boolean state) {
-		this.active = state;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }
