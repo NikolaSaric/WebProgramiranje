@@ -13,7 +13,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import beans.BlockUserBean;
+import beans.DestinationActivityBean;
+import beans.RegularUserBean;
+import models.Admin;
 import models.Destination;
+import models.RegularUser;
+import models.User;
 
 @Path("admin")
 public class AdminService {
@@ -27,6 +34,11 @@ public class AdminService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String addDestination(Destination dest) {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return null;
+		}
+
 		if (dest.getName() == null || dest.getName().equals("".trim())) {
 			return "Enter destination name.";
 		}
@@ -91,9 +103,164 @@ public class AdminService {
 
 		if (destinations == null) {
 			destinations = Util.loadDestinations();
+			ctx.setAttribute("destinations", destinations);
 		}
 
 		return destinations;
+	}
+
+	@POST
+	@Path("/deactivateDestination")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean deactivateDestination(DestinationActivityBean dab) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return false;
+		}
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+
+		for (Destination dest : destinations) {
+			if (dest.getName().equals(dab.getName()) && dest.getCountry().equals(dab.getCountry())) {
+				dest.setActive(false);
+				Util.saveDestinations(destinations);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@POST
+	@Path("/activateDestination")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean activateDestination(DestinationActivityBean dab) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return false;
+		}
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+
+		for (Destination dest : destinations) {
+			if (dest.getName().equals(dab.getName()) && dest.getCountry().equals(dab.getCountry())) {
+				dest.setActive(true);
+				Util.saveDestinations(destinations);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@POST
+	@Path("/editDestination")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean editDestination(Destination dest) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return false;
+		}
+
+		if (dest.getName() == null || dest.getName().equals("".trim())) {
+			return false;
+		}
+		if (dest.getCountry() == null || dest.getCountry().equals("".trim())) {
+			return false;
+		}
+		if (dest.getAirport() == null || dest.getAirport().equals("".trim())) {
+			return false;
+		}
+		if (dest.getAirportCode() == null || dest.getAirportCode().equals("".trim())) {
+			return false;
+		}
+		if (dest.getCoordinates() == null || dest.getCoordinates().equals("".trim())) {
+			return false;
+		}
+		if (dest.getPicture() == null || dest.getPicture().equals("".trim())) {
+			return false;
+		}
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+
+		for (Destination d : destinations) {
+			if (d.getName().equals(dest.getName()) && d.getCountry().equals(dest.getCountry())) {
+				d.setName(dest.getName());
+				d.setCountry(dest.getCountry());
+				d.setAirport(dest.getAirport());
+				d.setAirportCode(dest.getAirportCode());
+				d.setCoordinates(dest.getCoordinates());
+				d.setPicture(dest.getPicture());
+
+				Util.saveDestinations(destinations);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@GET
+	@Path("/getAllUsers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<RegularUserBean> getAllUsers() {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return null;
+		}
+
+		ArrayList<RegularUserBean> regularUsers = new ArrayList<RegularUserBean>();
+		@SuppressWarnings("unchecked")
+		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+
+		for (User u : users) {
+			if (u instanceof RegularUser) {
+				RegularUserBean rub = new RegularUserBean();
+				rub.setUsername(u.getUsername());
+				rub.setFirstName(u.getFirstName());
+				rub.setLastName(u.getLastName());
+				rub.setEmail(u.getEmail());
+				rub.setPhoneNumber(u.getPhoneNumber());
+				rub.setBlocked(u.isBlocked());
+
+				regularUsers.add(rub);
+			}
+		}
+
+		return regularUsers;
+	}
+
+	@POST
+	@Path("/blockUser")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean blockUser(BlockUserBean bub) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		if (!(loggedUser instanceof Admin)) {
+			return false;
+		}
+
+		if (bub.getUsername() == null || bub.getUsername().equals("".trim())) {
+			return false;
+		}
+
+		@SuppressWarnings("unchecked")
+		ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+		for (User u : users) {
+			if (u.getUsername().equals(bub.getUsername())) {
+				u.setBlocked(bub.isBlocked());
+				return true;
+			}
+		}
+		Util.saveUsers(users);
+
+		return false;
 	}
 
 }

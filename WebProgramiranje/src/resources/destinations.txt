@@ -1,4 +1,4 @@
-Belgrade|Serbia|Nikola Tesla|BEG|44.818350, 20.289201|Test picture.|1
+Belgrade|Serbia|Nikola Tesla|BEG|44.818350, 20.289201|Test picture.|0
 Vienna|Austria|Vienna Airport|VEA|48.125034, 16.559095|Test picture.|1
-Zurich|Switzerland|Zurich Airport|CH|47.449770, 8.571274|Test picture.|1
+Zurich|Switzerland|Zurich Airport|CHA|47.449770, 8.571274|Test picture.|0
 Nurnberg|Germany|Nurnberg|NRB|49.496636, 11.079829|Test picture.|1

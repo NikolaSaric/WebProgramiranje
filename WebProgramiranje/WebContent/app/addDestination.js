@@ -56,6 +56,9 @@ Vue.component("addDestination", {
         	if(this.destination.airportCode === null || this.destination.airportCode === "") {
         		return "Enter destination airport code.";
         	}
+        	if(this.destination.coordinates === null || this.destination.coordinates === "") {
+        		return "Enter destination coordinates.";
+        	}
         	if(this.destination.picture === null || this.destination.picture === "") {
         		return "Enter destination picture.";
         	}

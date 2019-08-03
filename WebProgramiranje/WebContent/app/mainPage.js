@@ -20,6 +20,9 @@ Vue.component("mainPage", {
 				<li>
 					<a  href="#" @click="selectTab(2)">Add Destination</a>
 				</li>
+				<li>
+					<a  href="#" @click="selectTab(3)">Users</a>
+				</li>
 			</ul>
 		</div>
 		<br />
@@ -28,6 +31,9 @@ Vue.component("mainPage", {
             </div> 
             <div  v-if="currentTab == 2">
                 <add-destination></add-destination>
+            </div>
+            <div  v-if="currentTab == 3">
+                <users-admin></users-admin>
             </div>
 		</div>
 	</div>
