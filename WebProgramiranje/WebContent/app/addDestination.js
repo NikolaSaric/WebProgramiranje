@@ -63,7 +63,7 @@ Vue.component("addDestination", {
         		return "Enter destination picture.";
         	}
         	
-        	axios.post("rest/admin/addDestination", this.destination)
+        	axios.post("rest/destination/addDestination", this.destination)
         		.then(response => {
         			toast(response.data);
         			var dests = JSON.parse(localStorage.destinations);

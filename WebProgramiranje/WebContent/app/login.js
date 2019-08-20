@@ -65,7 +65,7 @@ Vue.component("login", {
 				}
 				
 			});
-			axios.get("rest/admin/getAllDestinations")
+			axios.get("rest/destination/getAllDestinations")
 			.then(response => {
 				localStorage.destinations = JSON.stringify(response.data);
 			});

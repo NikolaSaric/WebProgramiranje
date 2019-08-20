@@ -23,6 +23,12 @@ Vue.component("mainPage", {
 				<li>
 					<a  href="#" @click="selectTab(3)">Users</a>
 				</li>
+				<li>
+					<a  href="#" @click="selectTab(4)">Flights</a>
+				</li>
+				<li>
+					<a  href="#" @click="selectTab(5)">Add Flight</a>
+				</li>
 			</ul>
 		</div>
 		<br />
@@ -34,6 +40,13 @@ Vue.component("mainPage", {
             </div>
             <div  v-if="currentTab == 3">
                 <users-admin></users-admin>
+            </div>
+            <div  v-if="currentTab == 4">
+            	<flights></flights>
+                
+            </div>
+            <div  v-if="currentTab == 5">
+            	<add-flight></add-flight>
             </div>
 		</div>
 	</div>

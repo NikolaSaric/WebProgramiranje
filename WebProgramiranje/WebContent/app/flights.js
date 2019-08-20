@@ -1,38 +1,47 @@
-Vue.component("destinations", {
+Vue.component("flights", {
 	data: function () {
 		    return {
-		    	destinations: [],
-		    	editDestination: false,
-		    	editingDestination: {},
-		    	oldDestination: {}
+		    	flights: [],
+		    	editFlight: false,
+		    	editingFlight: {},
+		    	oldFlight: {}
 		    	
 		    }
 	},
 	template: ` 
 <div>
-	<div v-if="editDestination == false">
-	<h3>All Destinations</h3>
+	<div v-if="editFlight == false">
+	<h3>All Flights</h3>
 
 	<table border="1">
 		<tr>
-			<th>Name</th>
-			<th>Country</th>
-			<th>Airport</th>
-			<th>Code</th>
-			<th>Coordinates</th>
-			<th>Active</th>
+			<th>Number</th>
+			<th>Starting Destination</th>
+			<th>Arrival Destination</th>
+			<th>Date</th>
+			<th>Plane Model</th>
+			<th>Flight Class</th>
+			<th>Price</th>
+			<th>First Class</th>
+			<th>Business Class</th>
+			<th>Economy Class</th>
+			<th>Sold Tickets</th>
 			<th>Options</th>
 		</tr>
-		<tr v-for="d in destinations">
-			<td>{{d.name}}</td>
-			<td>{{d.country}}</td>
-			<td>{{d.airport}}</td>
-			<td>{{d.airportCode}}</td>
-			<td>{{d.coordinates}}</td>
-			<td>{{d.active}}</td>
-			<td v-if="d.active==true"><button v-on:click="deactivate(d.name,d.country)">Deactivate</button></td>
-			<td v-if="d.active==false"><button v-on:click="activate(d.name,d.country)">Activate</button></td>
-			<td><button v-on:click="edit(d)">Edit</button></td>
+		<tr v-for="f in flights">
+			<td>{{f.number}}</td>
+			<td>{{f.startDestination}}</td>
+			<td>{{f.arrivalDestination}}</td>
+			<td>{{f.date}}</td>
+			<td>{{f.planeModel}}</td>
+			<td>{{f.flightClass}}</td>
+			<td>{{f.price}}</td>
+			<td>{{f.firstClass}}</td>
+			<td>{{f.businessClass}}</td>
+			<td>{{f.ecoClass}}</td>
+			<td>{{f.soldTickets}}</td>
+			<td><button v-on:click="activate(f.number)">Delete</button></td>
+			<td><button v-on:click="edit(f)">Edit</button></td>
 		</tr>
 	</table>
 	
@@ -75,64 +84,13 @@ Vue.component("destinations", {
 `
 	, 
 	mounted() {
-		if(localStorage.destinations === "") {
-			axios.get("rest/destination/getAllDestinations")
-				.then(response => {
-					localStorage.destinations = JSON.stringify(response.data);
-					this.destinations = response.data;
-				});
-		} else {
-			this.destinations = JSON.parse(localStorage.destinations);
-		}
+		axios("rest/flight/getAllFlights")
+			.then(response => {
+				this.flights = response.data;
+			});
 		
 	},
 	methods : {
-		activate: function(name, country) {
-			if(name == null || name == "") {
-				return;
-			}
-			if(country == null || country == "") {
-				return;
-			}
-			
-			axios.post("rest/destination/activateDestination", {name:name,country:country})
-				.then(response => {
-					if(response.data == true) {
-						toast("Successfully activated destination.");
-						this.destinations.forEach(function(d) {
-							if(d.name === name && d.country === country) {
-								d.active = true;
-							}
-						});
-						localStorage.destinations = JSON.stringify(this.destinations);
-					} else {
-						toast("There was an error with activating destination.");
-					}
-				});
-		},
-		deactivate: function(name, country) {
-			if(name == null || name == "") {
-				return;
-			}
-			if(country == null || country == "") {
-				return;
-			}
-			
-			axios.post("rest/destination/deactivateDestination", {name:name,country:country})
-				.then(response => {
-					if(response.data == true) {
-						toast("Successfully deactivated destination.");
-						this.destinations.forEach(function(d) {
-							if(d.name === name && d.country === country) {
-								d.active = false;
-							}
-						});
-						localStorage.destinations = JSON.stringify(this.destinations);
-					} else {
-						toast("There was an error with deactivating destination.");
-					}
-				});
-		},
 		edit: function(dest) {
 			this.editingDestination = dest;
 			this.oldDestination.airport = dest.airport;

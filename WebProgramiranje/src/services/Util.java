@@ -5,16 +5,23 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import models.Admin;
 import models.Destination;
+import models.Flight;
+import models.FlightClass;
 import models.RegularUser;
+import models.Reservation;
 import models.User;
 
 public class Util {
 	final static String usersPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\users.txt";
 	final static String destinationsPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\destinations.txt";
+	final static String flightsPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\flights.txt";
 
 	public static ArrayList<User> loadUsers() {
 		ArrayList<User> users = new ArrayList<User>();
@@ -137,6 +144,66 @@ public class Util {
 
 		}
 		writer.close();
+	}
+
+	public static ArrayList<Flight> loadFlights(ArrayList<Destination> destinations) throws ParseException {
+		ArrayList<Flight> flights = new ArrayList<Flight>();
+
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(flightsPath));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] l = line.split("\\|");
+
+				Flight f = new Flight();
+				f.setNumber(l[0]);
+				f.setPrice(Float.parseFloat(l[6]));
+				f.setPlaneModel(l[7]);
+				f.setFirstClass(Integer.parseInt(l[8]));
+				f.setBusinessClass(Integer.parseInt(l[9]));
+				f.setEcoClass(Integer.parseInt(l[10]));
+				f.setFlightClass(FlightClass.values()[Integer.parseInt(l[12])]);
+
+				/*
+				 * Sets starting and arrival destinations. text file holds name and country of
+				 * both destinations, and checks from every destination in system. This is done
+				 * once, when server boots.
+				 */
+				Destination startDestination = null;
+				Destination arrivalDestination = null;
+
+				for (Destination dest : destinations) {
+					if (startDestination != null && arrivalDestination != null) {
+						break;
+					}
+					if (dest.getName().equals(l[1]) && dest.getCountry().equals(l[2])) {
+						startDestination = dest;
+					} else if (dest.getName().equals(l[3]) && dest.getCountry().equals(l[4])) {
+						arrivalDestination = dest;
+					}
+				}
+
+				f.setStartingDestination(startDestination);
+				f.setArrivalDestination(arrivalDestination);
+
+				// Sets date of flight.
+				SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
+				Date flightDate = dateformat.parse(l[11]);
+				f.setDate(flightDate);
+
+				f.setReservations(new ArrayList<Reservation>());
+
+				flights.add(f);
+				// read next line
+				line = reader.readLine();
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return flights;
 	}
 
 }
