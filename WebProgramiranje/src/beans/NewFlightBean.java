@@ -12,6 +12,7 @@ public class NewFlightBean {
 	private int businessClass;
 	private int ecoClass;
 	private String date;
+	private String time;
 	private int flightClass;
 
 	public NewFlightBean() {
@@ -19,7 +20,7 @@ public class NewFlightBean {
 
 	public NewFlightBean(String number, String startDestinationName, String startDestinationCountry,
 			String arrivalDestinationName, String arrivalDestinationCountry, float price, String planeModel,
-			int firstClass, int businessClass, int ecoClass, String date, int flightClass) {
+			int firstClass, int businessClass, int ecoClass, String date, String time, int flightClass) {
 		this.number = number;
 		this.startDestinationName = startDestinationName;
 		this.startDestinationCountry = startDestinationCountry;
@@ -31,6 +32,7 @@ public class NewFlightBean {
 		this.businessClass = businessClass;
 		this.ecoClass = ecoClass;
 		this.date = date;
+		this.time = time;
 		this.flightClass = flightClass;
 	}
 
@@ -120,6 +122,14 @@ public class NewFlightBean {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 	public int getFlightClass() {

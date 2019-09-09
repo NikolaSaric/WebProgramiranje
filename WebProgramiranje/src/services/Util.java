@@ -188,7 +188,7 @@ public class Util {
 				f.setArrivalDestination(arrivalDestination);
 
 				// Sets date of flight.
-				SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 				Date flightDate = dateformat.parse(l[11]);
 				f.setDate(flightDate);
 
@@ -204,6 +204,39 @@ public class Util {
 		}
 
 		return flights;
+	}
+
+	public static void saveFlights(ArrayList<Flight> flights) throws IOException {
+		BufferedWriter writer;
+		writer = new BufferedWriter(new FileWriter(Util.flightsPath, false) // Set true for append mode
+		);
+		for (Flight f : flights) {
+			String newDestinationLine = f.getNumber() + "|" + f.getStartingDestination().getName() + "|"
+					+ f.getStartingDestination().getCountry() + "|" + f.getArrivalDestination().getName() + "|"
+					+ f.getArrivalDestination().getCountry() + "|";
+
+			if (f.getReservations().size() != 0) {
+				for (Reservation r : f.getReservations()) {
+					newDestinationLine += r.getId() + "," + r.getUser().getUsername() + "," + r.getDate() + ","
+							+ r.getSeatClass() + "," + r.getNumberOfPassengers() + ";";
+				}
+				newDestinationLine += "|" + f.getPrice() + "|" + f.getPlaneModel() + "|" + f.getFirstClass() + "|"
+						+ f.getBusinessClass() + "|" + f.getEcoClass() + "|" + f.getDate() + "|" + f.getFlightClass();
+			} else {
+				newDestinationLine += " |";
+			}
+
+			try {
+				writer.write(newDestinationLine);
+				writer.newLine(); // Add new line
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		writer.close();
 	}
 
 }

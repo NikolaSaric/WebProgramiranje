@@ -1,7 +1,6 @@
 package beans;
 
 import models.Flight;
-import models.FlightClass;
 
 public class FlightBean {
 	private String number;
@@ -12,7 +11,7 @@ public class FlightBean {
 	private int firstClass;
 	private int businessClass;
 	private int ecoClass;
-	private String date;
+	private long date;
 	private int flightClass;
 	private int soldTickets;
 
@@ -20,7 +19,7 @@ public class FlightBean {
 	}
 
 	public FlightBean(String number, String startDestination, String arrivalDestination, float price, String planeModel,
-			int firstClass, int businessClass, int ecoClass, String date, int flightClass, int soldTickets) {
+			int firstClass, int businessClass, int ecoClass, long date, int flightClass, int soldTickets) {
 		this.number = number;
 		this.startDestination = startDestination;
 		this.arrivalDestination = arrivalDestination;
@@ -38,7 +37,7 @@ public class FlightBean {
 		this.number = f.getNumber();
 		this.startDestination = f.getStartingDestination().getName() + ", " + f.getStartingDestination().getCountry();
 		this.arrivalDestination = f.getArrivalDestination().getName() + ", " + f.getArrivalDestination().getCountry();
-		this.date = f.getDate().toString();
+		this.date = f.getDate().getTime();
 		this.firstClass = f.getFirstClass();
 		this.businessClass = f.getBusinessClass();
 		this.ecoClass = f.getEcoClass();
@@ -113,11 +112,11 @@ public class FlightBean {
 		this.ecoClass = ecoClass;
 	}
 
-	public String getDate() {
+	public long getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 

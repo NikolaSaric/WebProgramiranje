@@ -58,6 +58,10 @@ Vue.component("addFlight", {
 			<td><input type="date" v-model="flightDate" ></td>
 		</tr>
 		<tr>
+			<td><b>Enter Time: </b></td>
+			<td><input type="time" v-model="flight.time" ></td>
+		</tr>
+		<tr>
 			<td><b>Enter Flight Class: </b></td>
 			<td>
 				<select v-model="flight.flightClass">
@@ -140,8 +144,10 @@ Vue.component("addFlight", {
         		toast("Choose flight class.");
         		return;
         	}
-        	
-        	
+        	if(this.flight.time === null) {
+        		toast("Enter flight time.");
+        		return;
+        	}
         	
         	axios.post("rest/flight/addFlight", this.flight)
         		.then(response => {
