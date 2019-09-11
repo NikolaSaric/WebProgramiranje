@@ -1,4 +1,4 @@
-FL200|Belgrade|Serbia|Vienna|Austria| |123.0|AS232|23|23|32|25/09/2019 02:33:00|1
-FL300|Belgrade|Serbia|Nurnberg|Germany| |200.0|AS33|49|39|50|27/09/2019 14:22:00|2
-GL300|Belgrade|Serbia|Zurich|Switzerland| |222.0|AA21|22|33|44|30/09/2019 11:23:00|0
-HG444|Vienna|Austria|Nurnberg|Germany| |200.0|TA222|40|60|89|02/10/2019 17:07:00|1
+AD220|Belgrade|Serbia|Vienna|Austria| |100.0|B200|28|38|80|1569599100000|1
+RT300|Belgrade|Serbia|Zurich|Switzerland| |250.0|EE232|50|50|148|1569240000000|0
+SQ222|Nurnberg|Germany|Vienna|Austria| |200.0|HH200|20|55|97|1569047400000|1
+YY343|Nurnberg|Germany|Belgrade|Serbia| |160.0|AA55|50|48|200|1568966400000|1

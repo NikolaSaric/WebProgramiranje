@@ -27,7 +27,7 @@ Vue.component("mainPage", {
                 <search-flights></search-flights>
             </div> 
             <div  v-if="currentTab == 2">
-                <h3>Reservations</h3>
+                <reservations></reservations>
             </div>
 
 		</div>

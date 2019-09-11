@@ -6,9 +6,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import models.Admin;
 import models.Destination;
@@ -16,12 +17,15 @@ import models.Flight;
 import models.FlightClass;
 import models.RegularUser;
 import models.Reservation;
+import models.SeatClass;
 import models.User;
 
 public class Util {
 	final static String usersPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\users.txt";
 	final static String destinationsPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\destinations.txt";
 	final static String flightsPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\flights.txt";
+	final static String reservationIDPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\reservationIDs.txt";
+	final static String reservationsPath = "C:\\Users\\NikolaS\\Documents\\FAKS\\WEB\\Web Projekat\\WebProgramiranje\\WebProgramiranje\\src\\resources\\reservations.txt";
 
 	public static ArrayList<User> loadUsers() {
 		ArrayList<User> users = new ArrayList<User>();
@@ -146,7 +150,8 @@ public class Util {
 		writer.close();
 	}
 
-	public static ArrayList<Flight> loadFlights(ArrayList<Destination> destinations) throws ParseException {
+	public static ArrayList<Flight> loadFlights(ArrayList<Destination> destinations,
+			ArrayList<Reservation> reservations) throws ParseException {
 		ArrayList<Flight> flights = new ArrayList<Flight>();
 
 		BufferedReader reader;
@@ -163,6 +168,7 @@ public class Util {
 				f.setFirstClass(Integer.parseInt(l[8]));
 				f.setBusinessClass(Integer.parseInt(l[9]));
 				f.setEcoClass(Integer.parseInt(l[10]));
+				f.setDate(new Date(Long.parseLong(l[11])));
 				f.setFlightClass(FlightClass.values()[Integer.parseInt(l[12])]);
 
 				/*
@@ -187,12 +193,17 @@ public class Util {
 				f.setStartingDestination(startDestination);
 				f.setArrivalDestination(arrivalDestination);
 
-				// Sets date of flight.
-				SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-				Date flightDate = dateformat.parse(l[11]);
-				f.setDate(flightDate);
+				// Add reservations.
+				ArrayList<Reservation> res = new ArrayList<Reservation>();
+				for (Reservation r : reservations) {
+					String[] lineID = r.getId().split(" ");
 
-				f.setReservations(new ArrayList<Reservation>());
+					if (f.getNumber().equals(lineID[0])) {
+						res.add(r);
+					}
+				}
+
+				f.setReservations(res);
 
 				flights.add(f);
 				// read next line
@@ -213,21 +224,109 @@ public class Util {
 		for (Flight f : flights) {
 			String newDestinationLine = f.getNumber() + "|" + f.getStartingDestination().getName() + "|"
 					+ f.getStartingDestination().getCountry() + "|" + f.getArrivalDestination().getName() + "|"
-					+ f.getArrivalDestination().getCountry() + "|";
-
-			if (f.getReservations().size() != 0) {
-				for (Reservation r : f.getReservations()) {
-					newDestinationLine += r.getId() + "," + r.getUser().getUsername() + "," + r.getDate() + ","
-							+ r.getSeatClass() + "," + r.getNumberOfPassengers() + ";";
-				}
-				newDestinationLine += "|" + f.getPrice() + "|" + f.getPlaneModel() + "|" + f.getFirstClass() + "|"
-						+ f.getBusinessClass() + "|" + f.getEcoClass() + "|" + f.getDate() + "|" + f.getFlightClass();
-			} else {
-				newDestinationLine += " |";
-			}
+					+ f.getArrivalDestination().getCountry() + "| |" + f.getPrice() + "|" + f.getPlaneModel() + "|" + f.getFirstClass() + "|" + f.getBusinessClass() + "|" + f.getEcoClass() + "|" + f.getDate().getTime() + "|"
+					+ f.getFlightClass().ordinal();
 
 			try {
 				writer.write(newDestinationLine);
+				writer.newLine(); // Add new line
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		writer.close();
+	}
+
+	public static HashMap<String, Integer> loadReservationID() {
+		HashMap<String, Integer> reservationID = new HashMap<String, Integer>();
+
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(reservationIDPath));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] l = line.split("\\|");
+				reservationID.put(l[0], Integer.parseInt(l[1]));
+
+				// read next line
+				line = reader.readLine();
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return reservationID;
+	}
+
+	public static void saveReservationID(HashMap<String, Integer> reservationID) throws IOException {
+		BufferedWriter writer;
+		writer = new BufferedWriter(new FileWriter(reservationIDPath, false) // Set true for append mode
+		);
+		for (Entry<String, Integer> res : reservationID.entrySet()) {
+			String resLine = res.getKey() + "|" + res.getValue();
+
+			try {
+				writer.write(resLine);
+				writer.newLine(); // Add new line
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		writer.close();
+	}
+
+	public static ArrayList<Reservation> loadReservations(ArrayList<User> users) {
+		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(reservationsPath));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] l = line.split("\\|");
+
+				Reservation res = new Reservation();
+				res.setId(l[0]);
+				res.setDate(new Date(Long.parseLong(l[2])));
+				res.setSeatClass(SeatClass.values()[Integer.parseInt(l[3])]);
+				res.setNumberOfPassengers(Integer.parseInt(l[4]));
+
+				for (User u : users) {
+					if (u.getUsername().equals(l[1])) {
+						res.setUser((RegularUser) u);
+						break;
+					}
+				}
+
+				reservations.add(res);
+				// read next line
+				line = reader.readLine();
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return reservations;
+	}
+
+	public static void saveReservations(ArrayList<Reservation> reservations) throws IOException {
+		BufferedWriter writer;
+		writer = new BufferedWriter(new FileWriter(reservationsPath, false) // Set true for append mode
+		);
+		for (Reservation res : reservations) {
+			String resLine = res.getId() + "|" + res.getUser().getUsername() + "|" + res.getDate().getTime() + "|"
+					+ res.getSeatClass().ordinal() + "|" + res.getNumberOfPassengers();
+
+			try {
+				writer.write(resLine);
 				writer.newLine(); // Add new line
 
 			} catch (IOException e) {

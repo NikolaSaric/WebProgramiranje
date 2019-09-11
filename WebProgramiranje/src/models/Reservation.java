@@ -3,13 +3,13 @@ package models;
 import java.util.Date;
 
 public class Reservation {
-	private int id;
+	private String id;
 	private RegularUser user;
 	private Date date;
 	private SeatClass seatClass;
 	private int numberOfPassengers;
 
-	public Reservation(int id, RegularUser user, Date date, SeatClass seatClass, int numberOfPassengers) {
+	public Reservation(String id, RegularUser user, Date date, SeatClass seatClass, int numberOfPassengers) {
 		this.id = id;
 		this.user = user;
 		this.date = date;
@@ -20,11 +20,11 @@ public class Reservation {
 	public Reservation() {
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -9,6 +9,7 @@ const UsersAdmin = { template: '<users-admin></users-admin>' }
 const AddFlight = { template: '<add-flight></add-flight>' }
 const Flights = { template: '<flights></flights>' }
 const SearchFlights = { template: '<search-flights></search-flights>' }
+const Reservations = { template: '<reservations></reservations>' }
 
 const router = new VueRouter({
 	  mode: 'hash',
@@ -29,6 +30,7 @@ var app = new Vue({
 	AddFlight,
 	Flights,
 	SearchFlights,
+	Reservations,
 	el: '#flightReservations'
 });
 

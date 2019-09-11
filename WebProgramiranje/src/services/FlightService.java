@@ -37,6 +37,7 @@ public class FlightService {
 	@Context
 	ServletContext ctx;
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/addFlight")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -78,13 +79,17 @@ public class FlightService {
 			return "Starting and arrival destinations must be different.";
 		}
 
-		@SuppressWarnings("unchecked")
 		ArrayList<Flight> flights = (ArrayList<Flight>) ctx.getAttribute("flights");
-		@SuppressWarnings("unchecked")
 		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
 
 		if (flights == null) {
-			flights = Util.loadFlights(destinations);
+			ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+			ArrayList<Reservation> reservations = (ArrayList<Reservation>) ctx.getAttribute("reservations");
+			if (reservations == null) {
+				reservations = Util.loadReservations(users);
+				ctx.setAttribute("reservations", reservations);
+			}
+			flights = Util.loadFlights(destinations, reservations);
 			ctx.setAttribute("flights", flights);
 		}
 		for (Flight f : flights) {
@@ -130,8 +135,8 @@ public class FlightService {
 		String newFlightLine = nfb.getNumber() + "|" + nfb.getStartDestinationName() + "|"
 				+ nfb.getStartDestinationCountry() + "|" + nfb.getArrivalDestinationName() + "|"
 				+ nfb.getArrivalDestinationCountry() + "| |" + nfb.getPrice() + "|" + nfb.getPlaneModel() + "|"
-				+ nfb.getFirstClass() + "|" + nfb.getBusinessClass() + "|" + nfb.getEcoClass() + "|" + nfb.getDate()
-				+ " " + nfb.getTime() + ":00" + "|" + nfb.getFlightClass();
+				+ nfb.getFirstClass() + "|" + nfb.getBusinessClass() + "|" + nfb.getEcoClass() + "|"
+				+ newFlight.getDate().getTime() + "|" + nfb.getFlightClass();
 
 		BufferedWriter writer;
 		try {
@@ -149,17 +154,22 @@ public class FlightService {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@GET
 	@Path("/getAllFlights")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<FlightBean> getAllFlights() throws ParseException {
-		@SuppressWarnings("unchecked")
 		ArrayList<Flight> flights = (ArrayList<Flight>) ctx.getAttribute("flights");
-		@SuppressWarnings("unchecked")
-		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
 
 		if (flights == null) {
-			flights = Util.loadFlights(destinations);
+			ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+			ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+			ArrayList<Reservation> reservations = (ArrayList<Reservation>) ctx.getAttribute("reservations");
+			if (reservations == null) {
+				reservations = Util.loadReservations(users);
+				ctx.setAttribute("reservations", reservations);
+			}
+			flights = Util.loadFlights(destinations, reservations);
 			ctx.setAttribute("flights", flights);
 		}
 
@@ -173,6 +183,7 @@ public class FlightService {
 		return flightBeans;
 	}
 
+	@SuppressWarnings("unchecked")
 	@DELETE
 	@Path("/deleteFlight/{flightNumber}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -181,18 +192,21 @@ public class FlightService {
 		if (!(loggedUser instanceof Admin)) {
 			return "No admin logged in.";
 		}
-		System.out.println(flightNumber);
 		if (flightNumber == null || flightNumber.equals("".trim())) {
 			return "There was an error with deleting flight.";
 		}
 
-		@SuppressWarnings("unchecked")
 		ArrayList<Flight> flights = (ArrayList<Flight>) ctx.getAttribute("flights");
-		@SuppressWarnings("unchecked")
-		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
 
 		if (flights == null) {
-			flights = Util.loadFlights(destinations);
+			ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+			ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+			ArrayList<Reservation> reservations = (ArrayList<Reservation>) ctx.getAttribute("reservations");
+			if (reservations == null) {
+				reservations = Util.loadReservations(users);
+				ctx.setAttribute("reservations", reservations);
+			}
+			flights = Util.loadFlights(destinations, reservations);
 			ctx.setAttribute("flights", flights);
 		}
 
@@ -218,25 +232,24 @@ public class FlightService {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path("/searchFlights")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public ArrayList<FlightBean> searchFlights(SearchFlightsBean sfb) throws ParseException {
 
-		System.out.println("Start country: " + sfb.getStartCountry());
-		System.out.println("Start airport: " + sfb.getStartAirport());
-		System.out.println("Arrival country: " + sfb.getArrivalCountry());
-		System.out.println("Arrival airport: " + sfb.getArrivalAirport());
-		System.out.println("Date: " + sfb.getDate());
-
-		@SuppressWarnings("unchecked")
 		ArrayList<Flight> flights = (ArrayList<Flight>) ctx.getAttribute("flights");
-		@SuppressWarnings("unchecked")
-		ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
 
 		if (flights == null) {
-			flights = Util.loadFlights(destinations);
+			ArrayList<Destination> destinations = (ArrayList<Destination>) ctx.getAttribute("destinations");
+			ArrayList<User> users = (ArrayList<User>) ctx.getAttribute("users");
+			ArrayList<Reservation> reservations = (ArrayList<Reservation>) ctx.getAttribute("reservations");
+			if (reservations == null) {
+				reservations = Util.loadReservations(users);
+				ctx.setAttribute("reservations", reservations);
+			}
+			flights = Util.loadFlights(destinations, reservations);
 			ctx.setAttribute("flights", flights);
 		}
 		ArrayList<FlightBean> flightBeans = new ArrayList<FlightBean>();
@@ -262,4 +275,5 @@ public class FlightService {
 
 		return flightBeans;
 	}
+
 }

@@ -16,13 +16,19 @@ Vue.component("searchFlights", {
 		    	filterDate: 0,
 		    	filterClass: 3,
 		    	filterNumber: "",
-		    	foundFlights: []
+		    	foundFlights: [],
+		    	
+		    	sf: {},
+		    	flightDetails: false,
+		    	numOfTickets: 1,
+		    	blocked: false
 		    }
 	},
 	template: ` 
 <div>
 	<div class="centered1">
 	<div class="centered2">
+	<div v-if="!flightDetails">
 	<h3>Search Flights</h3>
 	<table>
 		<tr>
@@ -129,15 +135,95 @@ Vue.component("searchFlights", {
 			<td>{{f.arrivalDestination}}</td>
 			<td>{{new Date(f.date)}}</td>
 			<td>{{f.planeModel}}</td>
-			<td>{{f.flightClass}}</td>
+			<td v-if="f.flightClass == 0">Charter</td>
+			<td v-if="f.flightClass == 1">Regional</td>
+			<td v-if="f.flightClass == 2">Oceanic</td>
 			<td>{{f.price}}</td>
 			<td>{{f.firstClass}}</td>
 			<td>{{f.businessClass}}</td>
 			<td>{{f.ecoClass}}</td>
 			<td>{{f.soldTickets}}</td>
-			<td><button v-on:click="">Details</button></td>
+			<td><button v-on:click="showDetails(f)">Details</button></td>
 		</tr>
 	</table>
+	</div>
+	<div v-if="flightDetails">
+		<table>
+			<tr>
+				<td><b>Flight Number </b></td>
+				<td>{{sf.number}}</td>
+			</tr>
+			<tr>
+				<td><b>Start Destination</b></td>
+				<td>{{sf.startDestination}}</td>
+			</tr>
+			<tr>
+				<td><b>Arrival Destination </b></td>
+				<td>{{sf.arrivalDestination}}</td>
+			</tr>
+			<tr>
+				<td><b>Flight Date </b></td>
+				<td>{{new Date(sf.date)}}</td>
+			</tr>
+			<tr>
+				<td><b>Plane Model </b></td>
+				<td>{{sf.planeModel}}</td>
+			</tr>
+			<tr>
+				<td><b>Flight Class </b></td>
+				<td v-if="sf.flightClass == 0">Charter</td>
+				<td v-if="sf.flightClass == 1">Regional</td>
+				<td v-if="sf.flightClass == 2">Oceanic</td>
+			</tr>
+			<tr>
+				<td><b>First Class </b></td>
+				<td>{{sf.firstClass}}</td>
+			</tr>
+			<tr>
+				<td><b>Business Class </b></td>
+				<td>{{sf.businessClass}}</td>
+			</tr>
+			<tr>
+				<td><b>Economy Class </b></td>
+				<td>{{sf.ecoClass}}</td>
+			</tr>
+			<tr>
+				<td><b>Sold Tickets </b></td>
+				<td>{{sf.soldTickets}}</td>
+			</tr>
+		</table>
+		<br />
+		<br />
+		<table>
+			<tr>
+				<td><b>Buy Ticket: </b></td>
+				<td></td>
+				<td><input type="number" v-model="numOfTickets" min="1"></td>
+				
+			</tr>
+			<tr>
+				<td><b>First</b></td>
+				<td><b>Business</b></td>
+				<td><b>Economy</b></td>
+			</tr>
+			<tr>
+				<td>{{sf.price * 1.5}}</td>
+				<td>{{sf.price * 1.25}}</td>
+				<td>{{sf.price}}</td>
+			</tr>
+			<tr>
+				<td><button v-on:click="buy(sf,0)">Buy</button></td>
+				<td><button v-on:click="buy(sf,1)">Buy</button></td>
+				<td><button v-on:click="buy(sf,2)">Buy</button></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><button v-on:click="back()">Back</button></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	
 	</div>
 	</div>
 </div>
@@ -153,7 +239,7 @@ Vue.component("searchFlights", {
 			  }
 			}
 		
-		//this.firstDate = new Date();
+		this.blocked = localStorage.loggedBlocked;
 	},
 	methods : {
 		searchFlights: function() {
@@ -217,6 +303,63 @@ Vue.component("searchFlights", {
 			this.filterDate = 0;
 			this.filterNumber = "";
 			this.tableFlights = this.flights;
+		},
+		showDetails: function(f) {
+			
+			this.sf = f;
+			this.flightDetails = true;
+		},
+		back: function() {
+			this.sf = {};
+			this.flightDetails = false;
+		},
+		buy: function(f,seatClass) {
+			if(this.blocked == true) {
+				toast("Your account is blocked!");
+				return;
+			}
+			
+			if(this.numOfTickets < 1) {
+				toast("Number of tickets must be greater than 0.");
+				return;
+			}
+			
+			if(seatClass == 0) {
+				if(f.firstClass - this.numOfTickets < 0) {
+					toast("There are not enough seats in first class.");
+					return;
+				}
+			} else if(seatClass == 1) {
+				if(f.businessClass - this.numOfTickets < 0) {
+					toast("There are not enough seats in business class.");
+					return;
+				}
+			} else if(seatClass == 2) {
+				if(f.ecoClass - this.numOfTickets < 0) {
+					toast("There are not enough seats in economy class.");
+					return;
+				}
+			}
+			
+			axios.post("rest/reservation/makeReservation",{flightNumber: f.number, numberOfPassengers: this.numOfTickets, seatClass: seatClass})
+				.then(response => {
+					if(response.data == null) {
+						toast("Something went wrong with your reservation.");
+					} else {
+						toast("Your reservation was succesfull.");
+						if(seatClass == 0) {
+							f.firstClass = f.firstClass - this.numOfTickets;
+						} else if(seatClass == 1) {
+							f.businessClass = f.businessClass - this.numOfTickets;
+						} else if(seatClass == 2) {
+							f.ecoClass = f.ecoClass - this.numOfTickets;
+						}
+						
+						f.soldTickets = f.soldTickets + 1;
+						this.numOfTickets = 1;
+					}
+					
+				});
 		}
 	},
 	watch: {
