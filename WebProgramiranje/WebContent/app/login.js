@@ -57,6 +57,7 @@ Vue.component("login", {
 					localStorage.loggedPhoneNumber = response.data.phoneNumber;
 					localStorage.loggedBlocked = response.data.blocked;
 					localStorage.loggedRole = response.data.role;
+					localStorage.loggedPicture = response.data.picture;
 					this.$router.push("/");
 				} else {
 					toast("Username or password are incorrect.");

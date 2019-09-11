@@ -7,6 +7,11 @@ Vue.component("profile", {
 		    	email: "",
 		    	phoneNumber: "",
 		    	blocked: "",
+		    	picture: "",
+		    	
+		    	uploadedImage: "",
+		    	imageBytes: [],
+		    	imageData: "",
 		    	
 		    	oldFirstName: "",
 		    	oldLastName: "",
@@ -32,14 +37,38 @@ Vue.component("profile", {
 		<br />
 		<table>
 			<tr>
-				<td><b>Username: </b></td>
-				<td>{{username}}</td>
-			</tr>
-			<tr>
-				<td><b>Blocked: </b></td>
-				<td>{{blocked}}</td>
+				<td>
+					<table>
+						<tr>
+							<td><b>Username: </b></td>
+							<td>{{username}}</td>
+						</tr>
+						<tr>
+							<td><b>Blocked: </b></td>
+							<td>{{blocked}}</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td v-if="imageData.length > 0">
+								<img :src="imageData" width="200" height="300">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="file" @change="previewImage" accept="image/*">
+							</td>
+							<td>
+								<button v-on:click="upload()">Upload</button>
+							</td>
+						</tr>
+					</table>
+				</td>
 			</tr>
 		</table>
+		
 		<br />
 		
 		<table v-if="!editPassword">
@@ -110,6 +139,7 @@ Vue.component("profile", {
 		this.email = localStorage.loggedEmail;
 		this.phoneNumber = localStorage.loggedPhoneNumber;
 		this.blocked = localStorage.loggedBlocked;
+		this.imageData = localStorage.loggedPicture;
 	},
 	methods : {
 		editProfile: function() {
@@ -170,6 +200,29 @@ Vue.component("profile", {
 				});
 			
 			this.cancelPassword();
+		},
+		previewImage: function(event) {
+            // Reference to the DOM input element
+            var input = event.target;
+            // Ensure that you have a file before attempting to read it
+            if (input.files && input.files[0]) {
+                // create a new FileReader to read this image and convert to base64 format
+                var reader = new FileReader();
+                // Define a callback function to run, when FileReader finishes its job
+                reader.onload = (e) => {
+                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+                    // Read image as base64 and set to imageData
+                    this.imageData = e.target.result;
+                }
+                // Start the reader job - read file as a data url (base64 format)
+                reader.readAsDataURL(input.files[0]);
+            }
+        },
+		upload: function() {
+			axios.post("rest/server/uploadPicture",{image: this.imageData})
+				.then(response => {
+					console.log(response.data);
+				});
 		}
 	},
 });
