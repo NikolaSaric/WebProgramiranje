@@ -29,7 +29,7 @@ Vue.component("searchFlights", {
 	<div class="centered1">
 	<div class="centered2">
 	<div v-if="!flightDetails">
-	<h3>Search Flights</h3>
+	<h3 class="h3">Search Flights</h3>
 	<table>
 		<tr>
 			<td>
@@ -68,8 +68,8 @@ Vue.component("searchFlights", {
 		</tr>
 		<tr>
 			<td></td>
-			<td><button v-on:click="searchFlights()">Search Flights</button></td>
-			<td><button v-on:click="reset()">Reset</button></td>
+			<td><button v-on:click="searchFlights()" class="buttonB">Search Flights</button></td>
+			<td><button v-on:click="reset()" class="buttonR">Reset</button></td>
 		</tr>
 	</table>
 			</td>
@@ -104,8 +104,8 @@ Vue.component("searchFlights", {
 					</tr>
 					<tr>
 							<td></td>
-							<td><button v-on:click="filterFlights()">Filter Flights</button></td>
-							<td><button v-on:click="resetFilter()">Reset</button></td>
+							<td><button v-on:click="filterFlights()" class="buttonB">Filter Flights</button></td>
+							<td><button v-on:click="resetFilter()" class="buttonR">Reset</button></td>
 					</tr>
 				</table>
 			</td>
@@ -114,7 +114,7 @@ Vue.component("searchFlights", {
 
 	
 	<br />
-	<table border="1" v-if="showFlights">
+	<table class="table" v-if="showFlights">
 		<tr>
 			<th>Number</th>
 			<th>Starting Destination</th>
@@ -143,7 +143,7 @@ Vue.component("searchFlights", {
 			<td>{{f.businessClass}}</td>
 			<td>{{f.ecoClass}}</td>
 			<td>{{f.soldTickets}}</td>
-			<td><button v-on:click="showDetails(f)">Details</button></td>
+			<td><button v-on:click="showDetails(f)" class="buttonB">Details</button></td>
 		</tr>
 	</table>
 	</div>
@@ -212,13 +212,13 @@ Vue.component("searchFlights", {
 				<td>{{sf.price}}</td>
 			</tr>
 			<tr>
-				<td><button v-on:click="buy(sf,0)">Buy</button></td>
-				<td><button v-on:click="buy(sf,1)">Buy</button></td>
-				<td><button v-on:click="buy(sf,2)">Buy</button></td>
+				<td><button v-on:click="buy(sf,0)" class="buttonG">Buy</button></td>
+				<td><button v-on:click="buy(sf,1)" class="buttonG">Buy</button></td>
+				<td><button v-on:click="buy(sf,2)" class="buttonG">Buy</button></td>
 			</tr>
 			<tr>
 				<td></td>
-				<td><button v-on:click="back()">Back</button></td>
+				<td><button v-on:click="back()" class="buttonR">Back</button></td>
 				<td></td>
 			</tr>
 		</table>
@@ -314,7 +314,7 @@ Vue.component("searchFlights", {
 			this.flightDetails = false;
 		},
 		buy: function(f,seatClass) {
-			if(this.blocked == true) {
+			if(this.blocked == "true") {
 				toast("Your account is blocked!");
 				return;
 			}
@@ -343,7 +343,7 @@ Vue.component("searchFlights", {
 			
 			axios.post("rest/reservation/makeReservation",{flightNumber: f.number, numberOfPassengers: this.numOfTickets, seatClass: seatClass})
 				.then(response => {
-					if(response.data == null) {
+					if(response.data.flightNumber == null) {
 						toast("Something went wrong with your reservation.");
 					} else {
 						toast("Your reservation was succesfull.");

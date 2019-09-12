@@ -65,6 +65,7 @@ public class Util {
 		BufferedWriter writer;
 		writer = new BufferedWriter(new FileWriter(Util.usersPath, false) // Set true for append mode
 		);
+		int c = 1;
 		for (User ub : users) {
 			String newUserLine = ub.getUsername() + "|" + ub.getPassword() + "|" + ub.getFirstName() + "|"
 					+ ub.getLastName() + "|" + ub.getPhoneNumber() + "|" + ub.getEmail() + "|" + ub.getPicture() + "|";
@@ -82,7 +83,11 @@ public class Util {
 
 			try {
 				writer.write(newUserLine);
-				writer.newLine(); // Add new line
+				if (c < users.size()) {
+					writer.newLine(); // Add new line
+					c++;
+
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -128,6 +133,7 @@ public class Util {
 		BufferedWriter writer;
 		writer = new BufferedWriter(new FileWriter(Util.destinationsPath, false) // Set true for append mode
 		);
+		int c = 1;
 		for (Destination dest : destinations) {
 			String newDestinationLine = dest.getName() + "|" + dest.getCountry() + "|" + dest.getAirport() + "|"
 					+ dest.getAirportCode() + "|" + dest.getCoordinates() + "|" + dest.getPicture() + "|";
@@ -139,7 +145,10 @@ public class Util {
 
 			try {
 				writer.write(newDestinationLine);
-				writer.newLine(); // Add new line
+				if (c < destinations.size()) {
+					writer.newLine(); // Add new line
+					c++;
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -221,15 +230,20 @@ public class Util {
 		BufferedWriter writer;
 		writer = new BufferedWriter(new FileWriter(Util.flightsPath, false) // Set true for append mode
 		);
+		int c = 1;
 		for (Flight f : flights) {
 			String newDestinationLine = f.getNumber() + "|" + f.getStartingDestination().getName() + "|"
 					+ f.getStartingDestination().getCountry() + "|" + f.getArrivalDestination().getName() + "|"
-					+ f.getArrivalDestination().getCountry() + "| |" + f.getPrice() + "|" + f.getPlaneModel() + "|" + f.getFirstClass() + "|" + f.getBusinessClass() + "|" + f.getEcoClass() + "|" + f.getDate().getTime() + "|"
-					+ f.getFlightClass().ordinal();
+					+ f.getArrivalDestination().getCountry() + "| |" + f.getPrice() + "|" + f.getPlaneModel() + "|"
+					+ f.getFirstClass() + "|" + f.getBusinessClass() + "|" + f.getEcoClass() + "|"
+					+ f.getDate().getTime() + "|" + f.getFlightClass().ordinal();
 
 			try {
 				writer.write(newDestinationLine);
-				writer.newLine(); // Add new line
+				if (c < flights.size()) {
+					writer.newLine(); // Add new line
+					c++;
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -266,12 +280,16 @@ public class Util {
 		BufferedWriter writer;
 		writer = new BufferedWriter(new FileWriter(reservationIDPath, false) // Set true for append mode
 		);
+		int c = 1;
 		for (Entry<String, Integer> res : reservationID.entrySet()) {
 			String resLine = res.getKey() + "|" + res.getValue();
 
 			try {
 				writer.write(resLine);
-				writer.newLine(); // Add new line
+				if (c < reservationID.entrySet().size()) {
+					writer.newLine(); // Add new line
+					c++;
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -321,13 +339,17 @@ public class Util {
 		BufferedWriter writer;
 		writer = new BufferedWriter(new FileWriter(reservationsPath, false) // Set true for append mode
 		);
+		int c = 1;
 		for (Reservation res : reservations) {
 			String resLine = res.getId() + "|" + res.getUser().getUsername() + "|" + res.getDate().getTime() + "|"
 					+ res.getSeatClass().ordinal() + "|" + res.getNumberOfPassengers();
 
 			try {
 				writer.write(resLine);
-				writer.newLine(); // Add new line
+				if (c < reservations.size()) {
+					writer.newLine(); // Add new line
+					c++;
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

@@ -10,7 +10,7 @@ Vue.component("addFlight", {
 	},
 	template: ` 
 <div>
-	<h3>Add New Flight</h3>
+	<h3 class="h3">Add New Flight</h3>
 
 	<table>
 		<tr>
@@ -73,7 +73,7 @@ Vue.component("addFlight", {
 		</tr>
 		<tr>
 			<td></td>
-			<td><button v-on:click="addFlight()">Add Flight</button></td>
+			<td><button v-on:click="addFlight()" class="buttonB">Add Flight</button></td>
 		</tr>
 	</table>
 	

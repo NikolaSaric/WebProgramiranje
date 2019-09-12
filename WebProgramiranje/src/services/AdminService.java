@@ -74,10 +74,10 @@ public class AdminService {
 		for (User u : users) {
 			if (u.getUsername().equals(bub.getUsername())) {
 				u.setBlocked(bub.isBlocked());
+				Util.saveUsers(users);
 				return true;
 			}
 		}
-		Util.saveUsers(users);
 
 		return false;
 	}

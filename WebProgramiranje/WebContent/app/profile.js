@@ -33,11 +33,11 @@ Vue.component("profile", {
 	<div class="centered1">
 	<div class="centered2">
 		<br />
-		<h2>User Profile</h2>
+		<h2 class="h2">User Profile</h2>
 		<br />
 		<table>
 			<tr>
-				<td>
+				<td style="padding:25px;">
 					<table>
 						<tr>
 							<td><b>Username: </b></td>
@@ -48,30 +48,8 @@ Vue.component("profile", {
 							<td>{{blocked}}</td>
 						</tr>
 					</table>
-				</td>
-				<td>
-					<table>
-						<tr>
-							<td v-if="imageData.length > 0">
-								<img :src="imageData" width="200" height="300">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="file" @change="previewImage" accept="image/*">
-							</td>
-							<td>
-								<button v-on:click="upload()">Upload</button>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		
-		<br />
-		
-		<table v-if="!editPassword">
+					<br />
+					<table v-if="!editPassword">
 			<tr>
 				<td><b>First Name: </b></td>
 				<td><input type="text" v-model="firstName" v-bind:disabled="edit==false"></td>
@@ -91,15 +69,15 @@ Vue.component("profile", {
 			<tr v-if="!edit">
 				<td></td>
 				<td>
-				<button v-on:click="editProfile()">Edit</button>
-				<button v-on:click="changePassword()">Change Password</button>
+				<button v-on:click="editProfile()" class="buttonB">Edit</button>
+				<button v-on:click="changePassword()" class="buttonB">Change Password</button>
 				</td>
 			</tr>
 			<tr v-if="edit">
 				<td></td>
 				<td>
-				<button v-on:click="saveProfile()">Save</button>
-				<button v-on:click="cancel()">Cancel</button>
+				<button v-on:click="saveProfile()" class="buttonG">Save</button>
+				<button v-on:click="cancel()" class="buttonR">Cancel</button>
 				</td>
 			</tr>
 			
@@ -121,12 +99,31 @@ Vue.component("profile", {
 			<tr>
 				<td></td>
 				<td>
-				<button v-on:click="savePassword()">Save</button>
-				<button v-on:click="cancelPassword()">Cancel</button>
+				<button v-on:click="savePassword()" class="buttonG">Save</button>
+				<button v-on:click="cancelPassword()" class="buttonR">Cancel</button>
 				</td>
 			</tr>
 		</table>
-	
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td v-if="imageData.length > 0">
+								<img :src="imageData" width="200" height="300">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="file" @change="previewImage" accept="image/*">
+							</td>
+							<td>
+								<button v-on:click="upload()" class="buttonG">Upload</button>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 	</div>
 	</div>	
 </div>	  
@@ -221,7 +218,8 @@ Vue.component("profile", {
 		upload: function() {
 			axios.post("rest/server/uploadPicture",{image: this.imageData})
 				.then(response => {
-					console.log(response.data);
+					localStorage.loggedPicture = this.imageData;
+					console.log("Successfully updated profile picture.");
 				});
 		}
 	},

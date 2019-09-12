@@ -12,7 +12,7 @@ Vue.component("login", {
 	<div class="centered1">
 	<div class="centered2">
 	<br />
-	<h2> Login</h2>
+	<h2 class="h2"> Login</h2>
 	<br />
 	<table>
 		<tr>
@@ -21,11 +21,11 @@ Vue.component("login", {
 		</tr>
 		<tr>
 			<td><b>Passsword: </b></td>
-			<td> <input type="text" v-model="password" ></td>
+			<td> <input type="password" v-model="password" ></td>
 		</tr>
 		<tr>
             <td>  </td>
-            <td><button v-on:click="login()">Login</button> </td>      
+            <td><button v-on:click="login()" class="buttonB" style="padding: 1px 30px;">Login</button> </td>      
         </tr>
 	</table>
 	
@@ -48,7 +48,7 @@ Vue.component("login", {
 			axios
 			.post('rest/server/login',{username: this.username, password: this.password})
 			.then(response => {
-				if(response.data !== null) {
+				if(response.data.username != null) {
 					toast("Logged in as: " + response.data.username + response.data.role);
 					localStorage.loggedUsername = response.data.username;
 					localStorage.loggedFirstName = response.data.firstName;

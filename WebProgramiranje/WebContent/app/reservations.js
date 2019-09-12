@@ -8,8 +8,8 @@ Vue.component("reservations", {
 <div>	
 	<div class="centered1">
 	<div class="centered2">
-	<h3>Reservations</h3>	
-	<table border="1">
+	<h3 class="h3">Reservations</h3>	
+	<table class="table">
 		<tr>
 			<th>Flight Number</th>
 			<th>Starting Destination</th>
@@ -21,6 +21,7 @@ Vue.component("reservations", {
 			<th>Number Of Passengers </th>
 			<th>Seat Class</th>
 			<th>Reserved</th>
+			<th>Options</th>
 		</tr>
 		<tr v-for="(r,index) in reservations">
 			<td>{{r.flightNumber}}</td>
@@ -35,7 +36,7 @@ Vue.component("reservations", {
 			<td v-if="r.seatClass == 1">Business</td>
 			<td v-if="r.seatClass == 2">Economy</td>
 			<td>{{new Date(r.date)}}</td>
-			<td><button v-on:click="del(r,index)">Delete</button></td>
+			<td><button v-on:click="del(r,index)" class="buttonR">Delete</button></td>
 		</tr>
 	</table>
 	

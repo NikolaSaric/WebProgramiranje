@@ -6,9 +6,9 @@ Vue.component("usersAdmin", {
 	},
 	template: ` 
 <div>
-		<h3>All Users</h3>
+		<h3 class="h3">All Users</h3>
 
-	<table border="1">
+	<table class="table">
 		<tr>
 			<th>Username</th>
 			<th>First Name</th>
@@ -25,8 +25,8 @@ Vue.component("usersAdmin", {
 			<td>{{u.email}}</td>
 			<td>{{u.phoneNumber}}</td>
 			<td>{{u.blocked}}</td>
-			<td v-if="u.blocked == false"><button v-on:click="block(u.username,u.blocked)">Block</button></td>
-			<td v-if="u.blocked == true"><button v-on:click="block(u.username,u.blocked)">Unblock</button></td>
+			<td v-if="u.blocked == false"><button v-on:click="block(u.username,u.blocked)" class="buttonR">Block</button></td>
+			<td v-if="u.blocked == true"><button v-on:click="block(u.username,u.blocked)" class="buttonG">Unblock</button></td>
 		</tr>
 	</table>
 </div>		  

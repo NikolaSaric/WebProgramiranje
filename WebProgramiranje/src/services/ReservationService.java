@@ -44,24 +44,19 @@ public class ReservationService {
 	public ReservationBean makeReservation(MakeReservationBean mrb) throws ParseException, IOException {
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
 		if (!(loggedUser instanceof RegularUser)) {
-			System.out.println("Puko 1");
 			return null;
 		}
-
 		if (loggedUser.isBlocked()) {
 			return null;
 		}
 
 		if (mrb.getFlightNumber() == null || mrb.getFlightNumber().equals("".trim())) {
-			System.out.println("Puko 2");
 			return null;
 		}
 		if (mrb.getNumberOfPassengers() < 1) {
-			System.out.println("Puko 3");
 			return null;
 		}
 		if (mrb.getSeatClass() < 0 || mrb.getSeatClass() > 2) {
-			System.out.println("Puko 4");
 			return null;
 		}
 
@@ -87,7 +82,6 @@ public class ReservationService {
 			}
 		}
 		if (flight == null) {
-			System.out.println("Puko 5");
 			return null;
 		}
 
@@ -95,21 +89,18 @@ public class ReservationService {
 		switch (mrb.getSeatClass()) {
 		case 0:
 			if (flight.getFirstClass() - mrb.getNumberOfPassengers() < 0) {
-				System.out.println("Puko 6");
 				return null;
 			}
 			flight.setFirstClass(flight.getFirstClass() - mrb.getNumberOfPassengers());
 			break;
 		case 1:
 			if (flight.getBusinessClass() - mrb.getNumberOfPassengers() < 0) {
-				System.out.println("Puko 7");
 				return null;
 			}
 			flight.setBusinessClass(flight.getBusinessClass() - mrb.getNumberOfPassengers());
 			break;
 		case 2:
 			if (flight.getEcoClass() - mrb.getNumberOfPassengers() < 0) {
-				System.out.println("Puko 8");
 				return null;
 			}
 			flight.setEcoClass(flight.getEcoClass() - mrb.getNumberOfPassengers());
@@ -186,7 +177,6 @@ public class ReservationService {
 
 		writer2.close();
 
-		System.out.println("Izvrsio se!");
 		return new ReservationBean(flight, reservation);
 	}
 
@@ -197,7 +187,6 @@ public class ReservationService {
 	public ArrayList<ReservationBean> getReservations() throws ParseException {
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
 		if (!(loggedUser instanceof RegularUser)) {
-			System.out.println("Puko 1");
 			return null;
 		}
 

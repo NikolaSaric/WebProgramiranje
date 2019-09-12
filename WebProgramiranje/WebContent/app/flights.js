@@ -27,7 +27,7 @@ Vue.component("flights", {
 <div>
 	<div class="centered1">
 	<div class="centered2">
-	<h3>Search Flights</h3>
+	<h3 class="h3">Search Flights</h3>
 	<table>
 		<tr>
 			<td>
@@ -66,8 +66,8 @@ Vue.component("flights", {
 		</tr>
 		<tr>
 			<td></td>
-			<td><button v-on:click="searchFlights()">Search Flights</button></td>
-			<td><button v-on:click="reset()">Reset</button></td>
+			<td><button v-on:click="searchFlights()" class="buttonB">Search Flights</button></td>
+			<td><button v-on:click="reset()" class="buttonR">Reset</button></td>
 		</tr>
 	</table>
 			</td>
@@ -102,8 +102,8 @@ Vue.component("flights", {
 					</tr>
 					<tr>
 							<td></td>
-							<td><button v-on:click="filterFlights()">Filter Flights</button></td>
-							<td><button v-on:click="resetFilter()">Reset</button></td>
+							<td><button v-on:click="filterFlights()" class="buttonB">Filter Flights</button></td>
+							<td><button v-on:click="resetFilter()" class="buttonR">Reset</button></td>
 					</tr>
 				</table>
 			</td>
@@ -112,7 +112,7 @@ Vue.component("flights", {
 
 	
 	<br />
-	<table border="1" v-if="showFlights">
+	<table class="table" v-if="showFlights">
 		<tr>
 			<th>Number</th>
 			<th>Starting Destination</th>
@@ -139,7 +139,7 @@ Vue.component("flights", {
 			<td>{{f.businessClass}}</td>
 			<td>{{f.ecoClass}}</td>
 			<td>{{f.soldTickets}}</td>
-			<td><button v-on:click="del(f.number,index)">Delete</button></td>
+			<td><button v-on:click="del(f.number,index)" class="buttonR">Delete</button></td>
 		</tr>
 	</table>
 	</div>

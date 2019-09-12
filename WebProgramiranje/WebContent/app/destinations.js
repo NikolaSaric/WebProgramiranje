@@ -4,16 +4,17 @@ Vue.component("destinations", {
 		    	destinations: [],
 		    	editDestination: false,
 		    	editingDestination: {},
-		    	oldDestination: {}
+		    	oldDestination: {},
+		    	imageData: ""
 		    	
 		    }
 	},
 	template: ` 
 <div>
 	<div v-if="editDestination == false">
-	<h3>All Destinations</h3>
+	<h3 class="h3">All Destinations</h3>
 
-	<table border="1">
+	<table class="table">
 		<tr>
 			<th>Name</th>
 			<th>Country</th>
@@ -30,9 +31,9 @@ Vue.component("destinations", {
 			<td>{{d.airportCode}}</td>
 			<td>{{d.coordinates}}</td>
 			<td>{{d.active}}</td>
-			<td v-if="d.active==true"><button v-on:click="deactivate(d.name,d.country)">Deactivate</button></td>
-			<td v-if="d.active==false"><button v-on:click="activate(d.name,d.country)">Activate</button></td>
-			<td><button v-on:click="edit(d)">Edit</button></td>
+			<td v-if="d.active==true"><button v-on:click="deactivate(d.name,d.country)" class="buttonR">Deactivate</button></td>
+			<td v-if="d.active==false"><button v-on:click="activate(d.name,d.country)" class="buttonG">Activate</button></td>
+			<td><button v-on:click="edit(d)" class="buttonB">Edit</button></td>
 		</tr>
 	</table>
 	
@@ -66,8 +67,22 @@ Vue.component("destinations", {
 				<td><input type="text" v-model="editingDestination.coordinates"></td>
 			</tr>
 			<tr>
-				<td><button v-on:click="saveEditing()">Save</button></td>
-				<td><button v-on:click="cancelEditing()">Cancel</button></td>
+				<td>
+				</td>
+				<td v-if="imageData.length > 0">
+					<img :src="imageData" width="200" height="300">
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+					<input type="file" @change="previewImage" accept="image/*">
+				</td>
+			</tr>
+			<tr>
+				<td><button v-on:click="saveEditing()" class="buttonG">Save</button></td>
+				<td><button v-on:click="cancelEditing()" class="buttonR">Cancel</button></td>
 			</tr>
 		</table>
 	</div>
@@ -138,6 +153,7 @@ Vue.component("destinations", {
 			this.oldDestination.airport = dest.airport;
 			this.oldDestination.airportCode = dest.airportCode;
 			this.oldDestination.coordinates = dest.coordinates;
+			this.imageData = dest.picture
 			this.oldDestination.picture = dest.picture;
 			this.editDestination = true;
 		},
@@ -158,10 +174,11 @@ Vue.component("destinations", {
         	if(this.editingDestination.coordinates === null || this.editingDestination.coordinates === "") {
         		return "Enter destination coordinates.";
         	}
-        	if(this.editingDestination.picture === null || this.editingDestination.picture === "") {
+        	if(this.imageData === null || this.imageData === "") {
         		return "Enter destination picture.";
         	}
-
+        	this.editingDestination.picture = this.imageData;
+        	
         	var name = this.editingDestination.name;
         	var country = this.editingDestination.country;
         	axios.post("rest/destination/editDestination", this.editingDestination)
@@ -179,6 +196,23 @@ Vue.component("destinations", {
 					toast("There was an error with editing destination.");
 				}
 			});
-		}
+		},
+        previewImage: function(event) {
+            // Reference to the DOM input element
+            var input = event.target;
+            // Ensure that you have a file before attempting to read it
+            if (input.files && input.files[0]) {
+                // create a new FileReader to read this image and convert to base64 format
+                var reader = new FileReader();
+                // Define a callback function to run, when FileReader finishes its job
+                reader.onload = (e) => {
+                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+                    // Read image as base64 and set to imageData
+                    this.imageData = e.target.result;
+                }
+                // Start the reader job - read file as a data url (base64 format)
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 	},
 });

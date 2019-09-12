@@ -11,7 +11,7 @@ Vue.component("mainPage", {
 	<div class="centered1">
 	<div class="centered2">
 		<div v-if="userRole==1">
-		<h2>Regular User Page</h2>
+		<h2 class="h2">Regular User Page</h2>
 		<div class="userMenu">
 			<ul>
 				<li>
@@ -81,6 +81,8 @@ Vue.component("mainPage", {
 			this.userRole = 1;
 		} else if(localStorage.loggedRole === "Admin") {
 			this.userRole = 2;
+		} else {
+			this.$router.push("/login");
 		}
 	},
 	methods : {

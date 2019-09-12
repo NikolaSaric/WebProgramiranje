@@ -4,7 +4,8 @@ Vue.component("register", {
 		      username: "",
 		      password: "",
 		      registerDiv: false,
-		      newUser: {}
+		      newUser: {},
+		      imageData: ""
 		    }
 	},
 	template: ` 
@@ -14,7 +15,7 @@ Vue.component("register", {
 	<div class="centered1">
 	<div class="centered2">
 	<br />
-	<h2> Register</h2>
+	<h2 class="h2"> Register</h2>
 	<br />
 	
 	<table>
@@ -47,12 +48,22 @@ Vue.component("register", {
 			<td> <input type="text" v-model="newUser.email" ></td>
 		</tr>
 		<tr>
-			<td><b>Picture: </b></td>
-			<td> <input type="text" v-model="newUser.picture" ></td>
+			<td>
+			</td>
+			<td v-if="imageData.length > 0">
+				<img :src="imageData" width="200" height="300">
+			</td>
+		</tr>
+		<tr>
+			<td>
+			</td>
+			<td>
+				<input type="file" @change="previewImage" accept="image/*">
+			</td>
 		</tr>
 		<tr>
             <td>  </td>
-            <td><button v-on:click="registerNewUser()">Register</button> </td>      
+            <td><button v-on:click="registerNewUser()" class="buttonG">Register</button> </td>      
         </tr>
         </table
 	</div>
@@ -96,18 +107,36 @@ Vue.component("register", {
 				toast("Repeat password does not matches password.");
 				return;
 			}
+			if(this.imageData == null || this.imageData == "") {
+				toast("Enter profile picture.");
+				return;
+			}
 			
-			this.newUser.picture = "";
+			this.newUser.picture = this.imageData;
 			
 			axios
 			.post('rest/server/register',this.newUser)
 			.then(response => {
 				toast(response.data);
-				if(response.data.startsWith("Successfully")) {
-					console.log("bravo");
-					this.registerDiv = false;
-				}
+				this.$router.push("/login");
 			});
-		}
+		},
+		previewImage: function(event) {
+            // Reference to the DOM input element
+            var input = event.target;
+            // Ensure that you have a file before attempting to read it
+            if (input.files && input.files[0]) {
+                // create a new FileReader to read this image and convert to base64 format
+                var reader = new FileReader();
+                // Define a callback function to run, when FileReader finishes its job
+                reader.onload = (e) => {
+                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+                    // Read image as base64 and set to imageData
+                    this.imageData = e.target.result;
+                }
+                // Start the reader job - read file as a data url (base64 format)
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 	},
 });

@@ -1,24 +1,15 @@
 package services;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -65,7 +56,6 @@ public class LoginService {
 		UserBean ub = new UserBean();
 		// Looks for user in ctx.users, if one is found adds it to session.
 		for (User u : (ArrayList<User>) ctx.getAttribute("users")) {
-			System.out.println(u.getClass());
 			if (u.getUsername().equals(lb.getUsername()) && u.getPassword().equals(lb.getPassword())) {
 				user = u.getUsername();
 				request.getSession().setAttribute("loggedUser", u);
@@ -193,8 +183,6 @@ public class LoginService {
 		}
 
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
-		System.out.println(loggedUser);
-		System.out.println(loggedUser.getUsername());
 		loggedUser.setFirstName(epb.getFirstName());
 		loggedUser.setLastName(epb.getLastName());
 		loggedUser.setEmail(epb.getEmail());
@@ -245,7 +233,6 @@ public class LoginService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String uploadPicture(PictureBean pb) throws IOException {
-		System.out.println(pb.getImage());
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
 		loggedUser.setPicture(pb.getImage());
 		@SuppressWarnings("unchecked")

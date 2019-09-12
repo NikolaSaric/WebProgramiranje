@@ -47,7 +47,6 @@ public class FlightService {
 		if (!(loggedUser instanceof Admin)) {
 			return "No logged in admin.";
 		}
-		System.out.println(nfb.getTime());
 		if (nfb.getNumber() == null || nfb.getNumber().equals("".trim())) {
 			return "Enter flight number.";
 		}
@@ -109,7 +108,7 @@ public class FlightService {
 					&& dest.getCountry().equals(nfb.getStartDestinationCountry())) {
 				startDestination = dest;
 			} else if (dest.getName().equals(nfb.getArrivalDestinationName())
-					&& dest.getCountry().equals(nfb.getArrivalDestinationName())) {
+					&& dest.getCountry().equals(nfb.getArrivalDestinationCountry())) {
 				arrivalDestination = dest;
 			}
 		}
@@ -266,7 +265,8 @@ public class FlightService {
 							|| sfb.getArrivalCountry().equals(f.getArrivalDestination().getCountry()))
 					&& (sfb.getArrivalAirport().equals("")
 							|| sfb.getArrivalAirport().equals(f.getArrivalDestination().getName()))
-					&& f.getDate().after(flightDate)) {
+					&& f.getDate().after(flightDate) && f.getDate().after(new Date())
+					&& f.getStartingDestination().isActive() && f.getArrivalDestination().isActive()) {
 
 				FlightBean fb = new FlightBean(f);
 				flightBeans.add(fb);
